@@ -7,7 +7,7 @@
 ## Features
 1. Android 4.1+ / Windows 10+
 2. Light & Amoled themes
-3. Forum section list
+3. Forum navigation drawer
 4. Date range picker
 5. Digest copying while clicking "Send" button
 
