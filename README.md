@@ -1,2 +1,2 @@
 # TypeCast
- Apps digests for 4PDA
+ Digest aggregator for 4PDA

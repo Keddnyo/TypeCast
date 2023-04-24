@@ -1,5 +1,5 @@
 name: typecast
-description: Apps digests for 4PDA.
+description: Digest aggregator for 4PDA
 publish_to: 'none'
 version: 1.0.0
 
