@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -47,18 +48,21 @@ class TypeCastState extends State<TypeCast> {
       name: 'Android - Программы',
       digestTopicId: '127361',
       color: Colors.indigo,
+      darkColor: Colors.lightBlue,
     ),
     ForumType.androidGames: ForumParams(
       id: 213,
       name: 'Android - Игры',
       digestTopicId: '381335',
       color: Colors.green,
+      darkColor: Colors.yellow,
     ),
     ForumType.wearableApps: ForumParams(
       id: 810,
       name: 'Носимые устройства',
       digestTopicId: '979689',
       color: Colors.purple,
+      darkColor: Colors.pink,
     ),
   };
 
@@ -70,12 +74,14 @@ class TypeCastState extends State<TypeCast> {
         child: _MainContent(),
       ),
       title: Constants.appName,
-      theme: ThemeData(
-        brightness: Brightness.light,
-        primarySwatch: forumParams[currentForum]!.color,
+      theme: FlexThemeData.light(
+        primary: forumParams[currentForum]!.color,
+        secondary: forumParams[currentForum]!.color,
       ),
-      darkTheme: ThemeData(
-        brightness: Brightness.dark,
+      darkTheme: FlexThemeData.dark(
+        primary: forumParams[currentForum]!.darkColor,
+        secondary: forumParams[currentForum]!.darkColor,
+        darkIsTrueBlack: true,
       ),
       themeMode: ThemeMode.system,
       localizationsDelegates: const [
@@ -276,12 +282,14 @@ class ForumParams {
   String name;
   String digestTopicId;
   MaterialColor color;
+  MaterialColor darkColor;
 
   ForumParams({
     required this.id,
     required this.name,
     required this.digestTopicId,
     required this.color,
+    required this.darkColor,
   });
 }
 
