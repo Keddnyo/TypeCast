@@ -1,9 +1,11 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:windows1251/windows1251.dart';
 
@@ -11,6 +13,10 @@ void main() => runApp(const TypeCast());
 
 class Constants {
   static String appName = 'TypeCast';
+
+  static int androidAppsId = 212;
+  static int androidGamesId = 213;
+  static int wearableAppsId = 810;
 }
 
 class TypeCast extends StatefulWidget {
@@ -21,6 +27,8 @@ class TypeCast extends StatefulWidget {
 }
 
 class TypeCastState extends State<TypeCast> {
+  final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
   var dateRange = DateTimeRange(
     start: DateTime.now().subtract(
       const Duration(days: 6),
@@ -34,37 +42,66 @@ class TypeCastState extends State<TypeCast> {
     });
   }
 
-  var currentForum = ForumType.androidApps;
+  String getDateStart() {
+    return DateFormat('dd.MM.yyyy').format(dateRange.start);
+  }
 
-  void setCurrentForum(ForumType type) {
+  String getDateEnd() {
+    return DateFormat('dd.MM.yyyy').format(dateRange.end);
+  }
+
+  ForumType? currentForum;
+
+  void setForumType(ForumType type) async {
     setState(() {
       currentForum = type;
     });
+
+    final SharedPreferences prefs = await _prefs;
+    await prefs.setInt('forum', forumParams[type]!.id);
   }
+
+  final forumTypes = {
+    Constants.androidAppsId: ForumType.androidApps,
+    Constants.androidGamesId: ForumType.androidGames,
+    Constants.wearableAppsId: ForumType.wearableApps,
+  };
 
   final forumParams = {
     ForumType.androidApps: ForumParams(
-      id: 212,
+      id: Constants.androidAppsId,
       name: 'Android - Программы',
       digestTopicId: '127361',
       color: Colors.indigo,
       darkColor: Colors.lightBlue,
     ),
     ForumType.androidGames: ForumParams(
-      id: 213,
+      id: Constants.androidGamesId,
       name: 'Android - Игры',
       digestTopicId: '381335',
-      color: Colors.green,
+      color: Colors.teal,
       darkColor: Colors.yellow,
     ),
     ForumType.wearableApps: ForumParams(
-      id: 810,
+      id: Constants.wearableAppsId,
       name: 'Носимые устройства',
       digestTopicId: '979689',
       color: Colors.purple,
       darkColor: Colors.pink,
     ),
   };
+
+  @override
+  void initState() {
+    super.initState();
+    _prefs.then((SharedPreferences prefs) {
+      var id = prefs.getInt('forum') ?? Constants.androidAppsId;
+      final ForumType type = forumTypes[id]!;
+      setState(() {
+        currentForum = type;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,12 +112,14 @@ class TypeCastState extends State<TypeCast> {
       ),
       title: Constants.appName,
       theme: FlexThemeData.light(
-        primary: forumParams[currentForum]!.color,
-        secondary: forumParams[currentForum]!.color,
+        primary: forumParams[currentForum]?.color,
+        secondary: forumParams[currentForum]?.color,
+        fontFamily: 'Comic Sans MS',
       ),
       darkTheme: FlexThemeData.dark(
-        primary: forumParams[currentForum]!.darkColor,
-        secondary: forumParams[currentForum]!.darkColor,
+        primary: forumParams[currentForum]?.darkColor,
+        secondary: forumParams[currentForum]?.darkColor,
+        fontFamily: 'Comic Sans MS',
         darkIsTrueBlack: true,
       ),
       themeMode: ThemeMode.system,
@@ -102,9 +141,22 @@ class _MainContent extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          state.forumParams[state.currentForum]!.name,
+        title: Column(
+          children: [
+            Text(
+              state.forumParams[state.currentForum]?.name ?? Constants.appName,
+              style: const TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Text(
+              '${state.getDateStart()} - ${state.getDateEnd()}',
+              style: const TextStyle(fontSize: 12),
+            ),
+          ],
         ),
+        centerTitle: true,
         actions: [
           IconButton(
             icon: const Icon(Icons.edit_calendar),
@@ -128,19 +180,24 @@ class _MainContent extends StatelessWidget {
   }
 }
 
-class _DigestContent extends StatelessWidget {
+class _DigestContent extends StatefulWidget {
+  @override
+  State<_DigestContent> createState() => _DigestContentState();
+}
+
+class _DigestContentState extends State<_DigestContent> {
   @override
   Widget build(BuildContext context) {
     final state = TypeCastInheritedWidget.of(context)!.state;
 
-    var startDate = DateFormat('dd.MM.yyyy').format(state.dateRange.start);
-    var endDate = DateFormat('dd.MM.yyyy').format(state.dateRange.end);
+    var startDate = state.getDateStart();
+    var endDate = state.getDateEnd();
 
     var digestResponse = () async {
       try {
         return await http.get(
           Uri.parse(
-            'https://4pda.to/forum/dig_an_prog.php?act=nocache&f=${state.forumParams[state.currentForum]!.id}&date_from=$startDate&date_to=$endDate&recursive=true',
+            'https://4pda.to/forum/dig_an_prog.php?act=nocache&f=${state.forumParams[state.currentForum]?.id}&date_from=$startDate&date_to=$endDate&recursive=true',
           ),
         );
       } catch (e) {
@@ -154,14 +211,24 @@ class _DigestContent extends StatelessWidget {
         if (!snapshot.hasData) {
           return const Center(child: CircularProgressIndicator());
         } else {
-          var content = windows1251.decode(snapshot.data!.bodyBytes);
+          var content = windows1251
+              .decode(snapshot.data!.bodyBytes)
+              .replaceAll('4pda.ru', '4pda.to');
+
           return Scaffold(
             body: ListView(
               children: [
                 Padding(
                   padding: const EdgeInsets.all(12.0),
-                  child: Text(
-                    content,
+                  child: Linkify(
+                    text: content.replaceAll('&#9733;', '★'),
+                    onOpen: (link) {
+                      launchUrl(
+                        Uri.parse(link.url),
+                        mode: LaunchMode.externalApplication,
+                      );
+                    },
+                    options: const LinkifyOptions(looseUrl: true),
                     style: const TextStyle(
                       fontSize: 16,
                     ),
@@ -170,13 +237,14 @@ class _DigestContent extends StatelessWidget {
                 const SizedBox(height: 100),
               ],
             ),
-            floatingActionButton: FloatingActionButton(
-              child: const Icon(Icons.send),
+            floatingActionButton: FloatingActionButton.extended(
+              icon: const Icon(Icons.send),
+              label: const Text('Копировать'),
               onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: content));
                 launchUrl(
                   Uri.parse(
-                    'https://4pda.to/forum/index.php?showtopic=${state.forumParams[state.currentForum]!.digestTopicId}',
+                    'https://4pda.to/forum/index.php?showtopic=${state.forumParams[state.currentForum]?.digestTopicId}',
                   ),
                   mode: LaunchMode.externalApplication,
                 );
@@ -208,13 +276,26 @@ class NavigationDrawer extends StatelessWidget {
               color: Theme.of(context).colorScheme.primary,
             ),
             child: Center(
-              child: Text(
-                Constants.appName,
-                style: TextStyle(
-                  fontSize: 36,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onPrimary,
-                ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    Constants.appName,
+                    style: TextStyle(
+                      fontSize: 36,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                  Text(
+                    'Created by Keddnyo',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Theme.of(context).colorScheme.onPrimary,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -225,7 +306,7 @@ class NavigationDrawer extends StatelessWidget {
               state.forumParams[ForumType.androidApps]!.name,
             ),
             onTap: () {
-              state.setCurrentForum(ForumType.androidApps);
+              state.setForumType(ForumType.androidApps);
               Navigator.pop(context);
             },
           ),
@@ -236,7 +317,7 @@ class NavigationDrawer extends StatelessWidget {
               state.forumParams[ForumType.androidGames]!.name,
             ),
             onTap: () {
-              state.setCurrentForum(ForumType.androidGames);
+              state.setForumType(ForumType.androidGames);
               Navigator.pop(context);
             },
           ),
@@ -247,19 +328,33 @@ class NavigationDrawer extends StatelessWidget {
               state.forumParams[ForumType.wearableApps]!.name,
             ),
             onTap: () {
-              state.setCurrentForum(ForumType.wearableApps);
+              state.setForumType(ForumType.wearableApps);
               Navigator.pop(context);
             },
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.info),
-            title: const Text('GitHub'),
+            leading: const Icon(Icons.account_circle),
+            title: const Text('Keddnyo'),
             onTap: () {
               Navigator.pop(context);
               launchUrl(
                 Uri.parse(
-                  'https://github.com/Keddnyo/TypeCast',
+                  'https://4pda.to/forum/index.php?showuser=8096247',
+                ),
+                mode: LaunchMode.externalApplication,
+              );
+            },
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.info),
+            title: const Text('О программе'),
+            onTap: () {
+              Navigator.pop(context);
+              launchUrl(
+                Uri.parse(
+                  'https://github.com/Keddnyo/TypeCast#readme',
                 ),
                 mode: LaunchMode.externalApplication,
               );
