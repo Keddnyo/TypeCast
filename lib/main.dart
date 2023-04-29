@@ -79,8 +79,8 @@ class TypeCastState extends State<TypeCast> {
       id: Constants.androidGamesId,
       name: 'Android - Игры',
       digestTopicId: '381335',
-      color: Colors.deepOrange,
-      darkColor: Colors.orange,
+      color: Colors.red,
+      darkColor: Colors.amber,
     ),
     ForumType.wearableApps: ForumParams(
       id: Constants.wearableAppsId,
