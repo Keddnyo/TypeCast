@@ -16,12 +16,8 @@
 
 ## Screenshots
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/65981689/234011916-fe720f36-74fc-42ea-a599-8e1c2059cb41.jpg" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/234011925-7b5da3f8-9c40-4a01-923f-e8426f404f37.jpg" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/234011926-b45bb20e-5a8a-4a8a-8726-a6e4d00baff1.jpg" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/234013003-7ea83a63-446e-4e03-a741-2a4a04c58548.jpg" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/234013008-4d98bfba-d3e7-47f9-a8e2-b438b3e85b4f.jpg" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/234012995-23c3a2ad-a993-4a57-bfec-808e73d8b322.jpg" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235278781-3b527734-1230-48b8-9dc9-44f19fe7e09a.png" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235278785-43fcf12d-faad-4d2a-ad4e-88d4853a9ec6.png" max-width="100%" width="33%">
 </p>
 
 [Показать на русском](https://github.com/Keddnyo/TypeCast/blob/master/README_ru-RU.md)
