@@ -79,8 +79,8 @@ class TypeCastState extends State<TypeCast> {
       id: Constants.androidGamesId,
       name: 'Android - Игры',
       digestTopicId: '381335',
-      color: Colors.teal,
-      darkColor: Colors.yellow,
+      color: Colors.deepOrange,
+      darkColor: Colors.orange,
     ),
     ForumType.wearableApps: ForumParams(
       id: Constants.wearableAppsId,
@@ -102,6 +102,8 @@ class TypeCastState extends State<TypeCast> {
       });
     });
   }
+
+  ScrollController controller = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -141,21 +143,34 @@ class _MainContent extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Column(
-          children: [
-            Text(
-              state.forumParams[state.currentForum]?.name ?? Constants.appName,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+        title: GestureDetector(
+          onTap: () {
+            state.controller.animateTo(
+              0,
+              duration: const Duration(milliseconds: 500),
+              curve: Curves.decelerate,
+            );
+          },
+          child: Column(
+            children: [
+              Text(
+                state.forumParams[state.currentForum]?.name ??
+                    Constants.appName,
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            Text(
-              '${state.getDateStart()} - ${state.getDateEnd()}',
-              style: const TextStyle(fontSize: 12),
-            ),
-          ],
+              Text(
+                '${state.getDateStart()} - ${state.getDateEnd()}',
+                style: const TextStyle(fontSize: 12),
+              ),
+            ],
+          ),
         ),
+        flexibleSpace: Theme.of(context).brightness == Brightness.light
+            ? AppBarBackground(state: state)
+            : null,
         centerTitle: true,
         actions: [
           IconButton(
@@ -171,11 +186,35 @@ class _MainContent extends StatelessWidget {
                 (range) => state.setDateRange(range ?? state.dateRange),
               );
             },
-          )
+          ),
         ],
       ),
       body: _DigestContent(),
       drawer: NavigationDrawer(state: state),
+    );
+  }
+}
+
+class AppBarBackground extends StatelessWidget {
+  const AppBarBackground({
+    super.key,
+    required this.state,
+  });
+
+  final TypeCastState state;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            state.forumParams[state.currentForum]?.color ?? Colors.blue,
+            state.forumParams[state.currentForum]?.darkColor.darken() ??
+                Colors.blue,
+          ],
+        ),
+      ),
     );
   }
 }
@@ -217,9 +256,10 @@ class _DigestContentState extends State<_DigestContent> {
 
           return Scaffold(
             body: ListView(
+              controller: state.controller,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: const EdgeInsets.all(8.0),
                   child: Linkify(
                     text: content.replaceAll('&#9733;', '★'),
                     onOpen: (link) {
@@ -239,7 +279,7 @@ class _DigestContentState extends State<_DigestContent> {
             ),
             floatingActionButton: FloatingActionButton.extended(
               icon: const Icon(Icons.send),
-              label: const Text('Копировать'),
+              label: const Text('Отправить'),
               onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: content));
                 launchUrl(
