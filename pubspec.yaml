@@ -27,6 +27,10 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  fonts:
+    - family: Comic Sans MS
+      fonts:
+        - asset: fonts/comic.ttf
 
 flutter_launcher_icons:
   android: false
