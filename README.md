@@ -24,7 +24,6 @@
 
 * The header of the application displays the selected section and period.
 * Clicking on the header moves the digest to the beginning.
-* The color scheme of the program changes depending on the selected section.
 
 * The links in the digest text are clickable. You can go directly to the desired topic.
 
@@ -32,6 +31,8 @@
 
 * Both light and dark themes are supported.
 * The dark theme is AMOLED.
+
+* The color scheme of the program changes depending on the selected section.
 
 * The app is available for different platforms:
   1. Android 4.1 and above
