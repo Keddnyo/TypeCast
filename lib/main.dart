@@ -255,43 +255,60 @@ class _DigestContentState extends State<_DigestContent> {
               .decode(snapshot.data!.bodyBytes)
               .replaceAll('4pda.ru', '4pda.to');
 
-          return Scaffold(
-            body: ListView(
-              controller: state.controller,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Linkify(
-                    text: content.replaceAll('&#9733;', '★'),
-                    onOpen: (link) {
-                      launchUrl(
-                        Uri.parse(link.url),
-                        mode: LaunchMode.externalApplication,
-                      );
-                    },
-                    options: const LinkifyOptions(looseUrl: true),
-                    style: const TextStyle(
-                      fontSize: 16,
+          if (snapshot.data?.statusCode == 200) {
+            return Scaffold(
+              body: ListView(
+                controller: state.controller,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Linkify(
+                      text: content.replaceAll('&#9733;', '★'),
+                      onOpen: (link) {
+                        launchUrl(
+                          Uri.parse(link.url),
+                          mode: LaunchMode.externalApplication,
+                        );
+                      },
+                      options: const LinkifyOptions(looseUrl: true),
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 100),
+                ],
+              ),
+              floatingActionButton: FloatingActionButton.extended(
+                icon: const Icon(Icons.send),
+                label: const Text('Отправить'),
+                onPressed: () async {
+                  await Clipboard.setData(ClipboardData(text: content));
+                  launchUrl(
+                    Uri.parse(
+                      'https://4pda.to/forum/index.php?showtopic=${state.forumParams[state.currentForum]?.digestTopicId}',
+                    ),
+                    mode: LaunchMode.externalApplication,
+                  );
+                },
+              ),
+            );
+          } else {
+            return Scaffold(
+              body: Center(
+                child: Text(
+                  snapshot.data!.body,
+                  style: const TextStyle(fontSize: 16),
                 ),
-                const SizedBox(height: 100),
-              ],
-            ),
-            floatingActionButton: FloatingActionButton.extended(
-              icon: const Icon(Icons.send),
-              label: const Text('Отправить'),
-              onPressed: () async {
-                await Clipboard.setData(ClipboardData(text: content));
-                launchUrl(
-                  Uri.parse(
-                    'https://4pda.to/forum/index.php?showtopic=${state.forumParams[state.currentForum]?.digestTopicId}',
-                  ),
-                  mode: LaunchMode.externalApplication,
-                );
-              },
-            ),
-          );
+              ),
+              floatingActionButton: FloatingActionButton(
+                onPressed: () {
+                  state.setDateRange(state.dateRange);
+                },
+                child: const Icon(Icons.refresh),
+              ),
+            );
+          }
         }
       }),
     );
@@ -348,7 +365,7 @@ class NavigationDrawer extends StatelessWidget {
             ),
             onTap: () {
               state.setForumType(ForumType.androidApps);
-              state.controller.jumpTo(0);
+              if (state.controller.hasClients) state.controller.jumpTo(0);
               Navigator.pop(context);
             },
           ),
@@ -360,7 +377,7 @@ class NavigationDrawer extends StatelessWidget {
             ),
             onTap: () {
               state.setForumType(ForumType.androidGames);
-              state.controller.jumpTo(0);
+              if (state.controller.hasClients) state.controller.jumpTo(0);
               Navigator.pop(context);
             },
           ),
@@ -372,7 +389,7 @@ class NavigationDrawer extends StatelessWidget {
             ),
             onTap: () {
               state.setForumType(ForumType.wearableApps);
-              state.controller.jumpTo(0);
+              if (state.controller.hasClients) state.controller.jumpTo(0);
               Navigator.pop(context);
             },
           ),
