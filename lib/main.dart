@@ -157,7 +157,7 @@ class _MainContent extends StatelessWidget {
                 state.forumParams[state.currentForum]?.name ??
                     Constants.appName,
                 style: const TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                 ),
               ),
