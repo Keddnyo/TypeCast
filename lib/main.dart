@@ -185,6 +185,7 @@ class _MainContent extends StatelessWidget {
               ).then(
                 (range) => state.setDateRange(range ?? state.dateRange),
               );
+              state.controller.jumpTo(0);
             },
           ),
         ],
@@ -347,6 +348,7 @@ class NavigationDrawer extends StatelessWidget {
             ),
             onTap: () {
               state.setForumType(ForumType.androidApps);
+              state.controller.jumpTo(0);
               Navigator.pop(context);
             },
           ),
@@ -358,6 +360,7 @@ class NavigationDrawer extends StatelessWidget {
             ),
             onTap: () {
               state.setForumType(ForumType.androidGames);
+              state.controller.jumpTo(0);
               Navigator.pop(context);
             },
           ),
@@ -369,6 +372,7 @@ class NavigationDrawer extends StatelessWidget {
             ),
             onTap: () {
               state.setForumType(ForumType.wearableApps);
+              state.controller.jumpTo(0);
               Navigator.pop(context);
             },
           ),
