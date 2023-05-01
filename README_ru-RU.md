@@ -6,8 +6,8 @@
 
 ## Скриншоты
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/65981689/235328312-f1c2541e-2556-4768-958f-038285726985.jpg" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/235328310-4109cb15-8eb6-41a5-848e-b7b45fc87071.jpg" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235524375-8bacc484-b8e8-43ca-ab06-b2d3dcb06911.png" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235524381-a31523c5-484c-4b7e-969c-47a04caa53e7.png" max-width="100%" width="33%">
 </p>
 
 ## Возможности:
@@ -25,6 +25,8 @@
 
 * В заголовке приложения отображается выбранный раздел и период.
 * Нажатие по заголовку перемещает дайджест в начало.
+
+* Форматирование текста дайджеста уникально для каждого из разделов.
 
 * Ссылки в тексте дайджеста - кликабельны. Можно сразу перейти в нужную тему.
 
