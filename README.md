@@ -38,4 +38,4 @@
   1. Android 4.1 and above
   2. Windows 10 and above
 
-[Показать на русском](https://github.com/Keddnyo/TypeCast/blob/master/README_ru-RU.md)
+[Показать на русском](https://github.com/Keddnyo/TypeCast/blob/main/README_ru-RU.md)
