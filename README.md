@@ -27,7 +27,7 @@
 
 * The links in the digest text are clickable. You can go directly to the desired topic.
 
-* The "Copy" button copies the digest to the clipboard and opens the appropriate topic for publishing the digest. All you have to do is paste text and publish the post.
+* The "Send" button copies the digest to the clipboard and opens the appropriate topic for publishing the digest. All you have to do is paste text and publish the post.
 
 * Both light and dark themes are supported.
 * The dark theme is AMOLED.
