@@ -74,7 +74,7 @@ class TypeCastState extends State<TypeCast> {
       digestTopicId: '127361',
       color: Colors.indigo,
       darkColor: Colors.lightBlue,
-      recursive: true,
+      recursive: 1,
     ),
     ForumType.androidGames: ForumParams(
       id: Constants.androidGamesId,
@@ -82,7 +82,7 @@ class TypeCastState extends State<TypeCast> {
       digestTopicId: '381335',
       color: Colors.red,
       darkColor: Colors.amber,
-      recursive: true,
+      recursive: 1,
     ),
     ForumType.wearableApps: ForumParams(
       id: Constants.wearableAppsId,
@@ -90,7 +90,7 @@ class TypeCastState extends State<TypeCast> {
       digestTopicId: '979689',
       color: Colors.purple,
       darkColor: Colors.pink,
-      recursive: false,
+      recursive: 0,
     ),
   };
 
@@ -256,9 +256,26 @@ class _DigestContentState extends State<_DigestContent> {
         } else {
           var content = windows1251
               .decode(snapshot.data!.bodyBytes)
-              .replaceAll('4pda.ru', '4pda.to');
+              .replaceAll('4pda.ru', '4pda.to')
+              .replaceAll('&#9733;', '★');
 
           if (snapshot.data?.statusCode == 200) {
+            String digest = content;
+
+            switch (state.currentForum) {
+              case ForumType.androidGames:
+                digest =
+                    '${digest.replaceAll('[/list]\n[CENTER][b]', '[/list]\n[/spoiler]\n[CENTER][b]').replaceAll('[CENTER][b]', '[spoiler=').replaceAll('[/b][/CENTER]', ']')}[/spoiler]'
+                        .replaceAll(
+                            '[/spoiler]\n[spoiler', '[/spoiler][spoiler');
+                break;
+              case ForumType.wearableApps:
+                break;
+              default:
+                digest =
+                    '${digest.replaceAll('[/CENTER]', '[/CENTER]\n[spoiler]').replaceAll('[/list]\n[CENTER]', '[/list]\n[/spoiler]\n[CENTER]')}[/spoiler]';
+            }
+
             return Scaffold(
               body: ListView(
                 controller: state.controller,
@@ -266,7 +283,7 @@ class _DigestContentState extends State<_DigestContent> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Linkify(
-                      text: content.replaceAll('&#9733;', '★'),
+                      text: digest,
                       onOpen: (link) {
                         launchUrl(
                           Uri.parse(link.url),
@@ -285,8 +302,8 @@ class _DigestContentState extends State<_DigestContent> {
               floatingActionButton: FloatingActionButton.extended(
                 icon: const Icon(Icons.send),
                 label: const Text('Отправить'),
-                onPressed: () async {
-                  await Clipboard.setData(ClipboardData(text: content));
+                onPressed: () {
+                  Clipboard.setData(ClipboardData(text: digest));
                   launchUrl(
                     Uri.parse(
                       'https://4pda.to/forum/index.php?showtopic=${state.forumParams[state.currentForum]?.digestTopicId}',
@@ -442,7 +459,7 @@ class ForumParams {
   String digestTopicId;
   MaterialColor color;
   MaterialColor darkColor;
-  bool recursive;
+  int recursive;
 
   ForumParams({
     required this.id,
