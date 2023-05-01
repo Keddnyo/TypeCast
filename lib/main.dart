@@ -74,6 +74,7 @@ class TypeCastState extends State<TypeCast> {
       digestTopicId: '127361',
       color: Colors.indigo,
       darkColor: Colors.lightBlue,
+      recursive: true,
     ),
     ForumType.androidGames: ForumParams(
       id: Constants.androidGamesId,
@@ -81,6 +82,7 @@ class TypeCastState extends State<TypeCast> {
       digestTopicId: '381335',
       color: Colors.red,
       darkColor: Colors.amber,
+      recursive: true,
     ),
     ForumType.wearableApps: ForumParams(
       id: Constants.wearableAppsId,
@@ -88,6 +90,7 @@ class TypeCastState extends State<TypeCast> {
       digestTopicId: '979689',
       color: Colors.purple,
       darkColor: Colors.pink,
+      recursive: false,
     ),
   };
 
@@ -237,7 +240,7 @@ class _DigestContentState extends State<_DigestContent> {
       try {
         return await http.get(
           Uri.parse(
-            'https://4pda.to/forum/dig_an_prog.php?act=nocache&f=${state.forumParams[state.currentForum]?.id}&date_from=$startDate&date_to=$endDate&recursive=true',
+            'https://4pda.to/forum/dig_an_prog.php?act=nocache&f=${state.forumParams[state.currentForum]?.id}&date_from=$startDate&date_to=$endDate&recursive=${state.forumParams[state.currentForum]?.recursive}',
           ),
         );
       } catch (e) {
@@ -439,6 +442,7 @@ class ForumParams {
   String digestTopicId;
   MaterialColor color;
   MaterialColor darkColor;
+  bool recursive;
 
   ForumParams({
     required this.id,
@@ -446,6 +450,7 @@ class ForumParams {
     required this.digestTopicId,
     required this.color,
     required this.darkColor,
+    required this.recursive,
   });
 }
 
