@@ -335,11 +335,11 @@ class _DigestContentState extends State<_DigestContent> {
               body: ListView(
                 controller: state.controller,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SingleChildScrollView(
-                      scrollDirection:
-                          state.softWrap ? Axis.vertical : Axis.horizontal,
+                  SingleChildScrollView(
+                    scrollDirection:
+                        state.softWrap ? Axis.vertical : Axis.horizontal,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
                       child: showLinkifyText(state.softWrap),
                     ),
                   ),
