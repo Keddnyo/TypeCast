@@ -1,0 +1,22 @@
+{
+    "send": "Отправить",
+
+    "androidApps": "Android - Программы",
+    "androidGames": "Android - Игры",
+    "wearableApps": "Носимые устройства",
+
+    "settings": "Настройки",
+
+    "appearance": "Внешний вид",
+    "darkMode": "Тёмная тема",
+    "darkModeSummary": "Актуально для AMOLED экранов",
+
+    "behavior": "Поведение",
+    "softWrap": "Перенос строк",
+    "softWrapSummary": "Удобно для маленьких экранов",
+
+    "about": "О приложении",
+    "aboutSummary": "Репозиторий на GitHub",
+
+    "developer": "Разработчик"
+}

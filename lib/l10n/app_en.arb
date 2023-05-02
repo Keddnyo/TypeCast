@@ -1,0 +1,22 @@
+{
+    "send": "Send",
+
+    "androidApps": "Android - Apps",
+    "androidGames": "Android - Games",
+    "wearableApps": "Wearable Apps",
+
+    "settings": "Settings",
+
+    "appearance": "Appearance",
+    "darkMode": "Dark mode",
+    "darkModeSummary": "Good for AMOLED screens",
+
+    "behavior": "Behavior",
+    "softWrap": "Text soft wrap",
+    "softWrapSummary": "Good for small-size screens",
+
+    "about": "About",
+    "aboutSummary": "Source code on GitHub",
+
+    "developer": "Developer"
+}

@@ -1,26 +1,28 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:windows1251/windows1251.dart';
 
 void main() => runApp(const TypeCast());
 
-class Constants {
+class TypeCast extends StatefulWidget {
+  const TypeCast({super.key});
+
   static String appName = 'TypeCast';
+  static String fontFamily = 'Comic Sans MS';
+
+  static bool softWrap = true;
 
   static int androidAppsId = 212;
   static int androidGamesId = 213;
   static int wearableAppsId = 810;
-}
-
-class TypeCast extends StatefulWidget {
-  const TypeCast({super.key});
 
   @override
   State<TypeCast> createState() => TypeCastState();
@@ -28,6 +30,21 @@ class TypeCast extends StatefulWidget {
 
 class TypeCastState extends State<TypeCast> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+
+  bool useDarkMode = false;
+
+  void changeTheme(bool darkMode) async {
+    setState(() {
+      useDarkMode = darkMode;
+    });
+
+    final SharedPreferences prefs = await _prefs;
+    await prefs.setBool('theme', useDarkMode == true);
+  }
+
+  bool softWrap = TypeCast.softWrap;
+
+  setSoftWrap(bool newValue) => setState(() => softWrap = newValue);
 
   var dateRange = DateTimeRange(
     start: DateTime.now().subtract(
@@ -42,13 +59,8 @@ class TypeCastState extends State<TypeCast> {
     });
   }
 
-  String getDateStart() {
-    return DateFormat('dd.MM.yyyy').format(dateRange.start);
-  }
-
-  String getDateEnd() {
-    return DateFormat('dd.MM.yyyy').format(dateRange.end);
-  }
+  String getDateStart() => DateFormat('dd.MM.yyyy').format(dateRange.start);
+  String getDateEnd() => DateFormat('dd.MM.yyyy').format(dateRange.end);
 
   ForumType? currentForum;
 
@@ -62,14 +74,14 @@ class TypeCastState extends State<TypeCast> {
   }
 
   final forumTypes = {
-    Constants.androidAppsId: ForumType.androidApps,
-    Constants.androidGamesId: ForumType.androidGames,
-    Constants.wearableAppsId: ForumType.wearableApps,
+    TypeCast.androidAppsId: ForumType.androidApps,
+    TypeCast.androidGamesId: ForumType.androidGames,
+    TypeCast.wearableAppsId: ForumType.wearableApps,
   };
 
   final forumParams = {
     ForumType.androidApps: ForumParams(
-      id: Constants.androidAppsId,
+      id: TypeCast.androidAppsId,
       name: 'Android - Программы',
       digestTopicId: '127361',
       color: Colors.indigo,
@@ -77,7 +89,7 @@ class TypeCastState extends State<TypeCast> {
       recursive: 1,
     ),
     ForumType.androidGames: ForumParams(
-      id: Constants.androidGamesId,
+      id: TypeCast.androidGamesId,
       name: 'Android - Игры',
       digestTopicId: '381335',
       color: Colors.red,
@@ -85,7 +97,7 @@ class TypeCastState extends State<TypeCast> {
       recursive: 1,
     ),
     ForumType.wearableApps: ForumParams(
-      id: Constants.wearableAppsId,
+      id: TypeCast.wearableAppsId,
       name: 'Носимые устройства',
       digestTopicId: '979689',
       color: Colors.purple,
@@ -98,10 +110,17 @@ class TypeCastState extends State<TypeCast> {
   void initState() {
     super.initState();
     _prefs.then((SharedPreferences prefs) {
-      var id = prefs.getInt('forum') ?? Constants.androidAppsId;
-      final ForumType type = forumTypes[id]!;
+      var darkMode = prefs.getBool('theme') ?? false;
+
+      var forumId = prefs.getInt('forum') ?? TypeCast.androidAppsId;
+      final ForumType type = forumTypes[forumId]!;
+
+      var useSoftWrap = prefs.getBool('useSoftWrap') ?? TypeCast.softWrap;
+
       setState(() {
+        useDarkMode = darkMode;
         currentForum = type;
+        softWrap = useSoftWrap;
       });
     });
   }
@@ -110,39 +129,55 @@ class TypeCastState extends State<TypeCast> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: TypeCastInheritedWidget(
-        state: this,
-        child: _MainContent(),
+    return TypeCastInheritedWidget(
+      state: this,
+      child: MaterialApp(
+        title: TypeCast.appName,
+        theme: FlexThemeData.light(
+          primary: forumParams[currentForum]?.color,
+          secondary: forumParams[currentForum]?.color,
+          fontFamily: TypeCast.fontFamily,
+        ),
+        darkTheme: FlexThemeData.dark(
+          primary: forumParams[currentForum]?.darkColor,
+          secondary: forumParams[currentForum]?.darkColor,
+          fontFamily: TypeCast.fontFamily,
+          darkIsTrueBlack: true,
+        ),
+        themeMode: useDarkMode ? ThemeMode.dark : ThemeMode.light,
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
+        initialRoute: '/',
+        routes: {
+          '/': (context) => _MainScreen(),
+          '/settings': (context) => const SettingsScreen(),
+        },
       ),
-      title: Constants.appName,
-      theme: FlexThemeData.light(
-        primary: forumParams[currentForum]?.color,
-        secondary: forumParams[currentForum]?.color,
-        fontFamily: 'Comic Sans MS',
-      ),
-      darkTheme: FlexThemeData.dark(
-        primary: forumParams[currentForum]?.darkColor,
-        secondary: forumParams[currentForum]?.darkColor,
-        fontFamily: 'Comic Sans MS',
-        darkIsTrueBlack: true,
-      ),
-      themeMode: ThemeMode.system,
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('en'),
-        Locale('ru'),
-      ],
     );
   }
 }
 
-class _MainContent extends StatelessWidget {
+class _MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = TypeCastInheritedWidget.of(context)!.state;
+    final textRes = AppLocalizations.of(context)!;
+
+    String forumTitle;
+
+    switch (state.currentForum) {
+      case ForumType.androidApps:
+        forumTitle = textRes.androidApps;
+        break;
+      case ForumType.androidGames:
+        forumTitle = textRes.androidGames;
+        break;
+      case ForumType.wearableApps:
+        forumTitle = textRes.wearableApps;
+        break;
+      default:
+        forumTitle = TypeCast.appName;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -157,8 +192,7 @@ class _MainContent extends StatelessWidget {
           child: Column(
             children: [
               Text(
-                state.forumParams[state.currentForum]?.name ??
-                    Constants.appName,
+                forumTitle,
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -171,9 +205,8 @@ class _MainContent extends StatelessWidget {
             ],
           ),
         ),
-        flexibleSpace: Theme.of(context).brightness == Brightness.light
-            ? AppBarBackground(state: state)
-            : null,
+        flexibleSpace:
+            state.useDarkMode ? null : AppBarBackground(state: state),
         centerTitle: true,
         actions: [
           IconButton(
@@ -265,7 +298,7 @@ class _DigestContentState extends State<_DigestContent> {
             switch (state.currentForum) {
               case ForumType.androidGames:
                 digest =
-                    '${digest.replaceAll('[/list]\n[CENTER][b]', '[/list]\n[/spoiler]\n[CENTER][b]').replaceAll('[CENTER][b]', '[spoiler=').replaceAll('[/b][/CENTER]', ']')}[/spoiler]'
+                    '${digest.replaceAll('[/list]\n[CENTER][b]', '[/list]\n[/spoiler]\n[CENTER][b]').replaceAll('[CENTER][b]', '[spoiler=').replaceAll('[/b][/CENTER]', ']')}\n[/spoiler]'
                         .replaceAll(
                             '[/spoiler]\n[spoiler', '[/spoiler][spoiler');
                 break;
@@ -273,7 +306,29 @@ class _DigestContentState extends State<_DigestContent> {
                 break;
               default:
                 digest =
-                    '${digest.replaceAll('[/CENTER]', '[/CENTER]\n[spoiler]').replaceAll('[/list]\n[CENTER]', '[/list]\n[/spoiler]\n[CENTER]')}[/spoiler]';
+                    '${digest.replaceAll('[/CENTER]', '[/CENTER]\n[spoiler]').replaceAll('[/list]\n[CENTER]', '[/list]\n[/spoiler]\n[CENTER]')}\n[/spoiler]';
+            }
+
+            showLinkifyText(bool softWrap) {
+              return Linkify(
+                softWrap: state.softWrap,
+                text: digest,
+                onOpen: (link) {
+                  launchUrl(
+                    Uri.parse(link.url),
+                    mode: LaunchMode.externalApplication,
+                  );
+                },
+                options: const LinkifyOptions(
+                  humanize: false,
+                  looseUrl: true,
+                ),
+                style: const TextStyle(
+                  fontSize: 16,
+                ),
+                linkStyle:
+                    TextStyle(color: Theme.of(context).colorScheme.primary),
+              );
             }
 
             return Scaffold(
@@ -282,18 +337,10 @@ class _DigestContentState extends State<_DigestContent> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Linkify(
-                      text: digest,
-                      onOpen: (link) {
-                        launchUrl(
-                          Uri.parse(link.url),
-                          mode: LaunchMode.externalApplication,
-                        );
-                      },
-                      options: const LinkifyOptions(looseUrl: true),
-                      style: const TextStyle(
-                        fontSize: 16,
-                      ),
+                    child: SingleChildScrollView(
+                      scrollDirection:
+                          state.softWrap ? Axis.vertical : Axis.horizontal,
+                      child: showLinkifyText(state.softWrap),
                     ),
                   ),
                   const SizedBox(height: 100),
@@ -346,12 +393,19 @@ class NavigationDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+      backgroundColor: state.useDarkMode ? Colors.black : null,
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primary,
+              gradient: LinearGradient(
+                colors: [
+                  state.forumParams[state.currentForum]?.color ?? Colors.blue,
+                  state.forumParams[state.currentForum]?.darkColor ??
+                      Colors.blue,
+                ],
+              ),
             ),
             child: Center(
               child: Column(
@@ -359,7 +413,7 @@ class NavigationDrawer extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    Constants.appName,
+                    TypeCast.appName,
                     style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.bold,
@@ -381,7 +435,7 @@ class NavigationDrawer extends StatelessWidget {
             selected: state.currentForum == ForumType.androidApps,
             leading: const Icon(Icons.android),
             title: Text(
-              state.forumParams[ForumType.androidApps]!.name,
+              AppLocalizations.of(context)!.androidApps,
             ),
             onTap: () {
               state.setForumType(ForumType.androidApps);
@@ -393,7 +447,7 @@ class NavigationDrawer extends StatelessWidget {
             selected: state.currentForum == ForumType.androidGames,
             leading: const Icon(Icons.catching_pokemon),
             title: Text(
-              state.forumParams[ForumType.androidGames]!.name,
+              AppLocalizations.of(context)!.androidGames,
             ),
             onTap: () {
               state.setForumType(ForumType.androidGames);
@@ -405,7 +459,7 @@ class NavigationDrawer extends StatelessWidget {
             selected: state.currentForum == ForumType.wearableApps,
             leading: const Icon(Icons.watch),
             title: Text(
-              state.forumParams[ForumType.wearableApps]!.name,
+              AppLocalizations.of(context)!.wearableApps,
             ),
             onTap: () {
               state.setForumType(ForumType.wearableApps);
@@ -415,33 +469,109 @@ class NavigationDrawer extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.account_circle),
-            title: const Text('Keddnyo'),
+            leading: const Icon(Icons.settings),
+            title: Text(AppLocalizations.of(context)!.settings),
             onTap: () {
-              Navigator.pop(context);
-              launchUrl(
-                Uri.parse(
-                  'https://4pda.to/forum/index.php?showuser=8096247',
-                ),
-                mode: LaunchMode.externalApplication,
-              );
-            },
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.info),
-            title: const Text('О программе'),
-            onTap: () {
-              Navigator.pop(context);
-              launchUrl(
-                Uri.parse(
-                  'https://github.com/Keddnyo/TypeCast#readme',
-                ),
-                mode: LaunchMode.externalApplication,
-              );
+              Navigator.pushNamed(context, '/settings');
             },
           ),
         ],
+      ),
+    );
+  }
+}
+
+class SettingsScreen extends StatefulWidget {
+  const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  @override
+  Widget build(BuildContext context) {
+    final state = TypeCastInheritedWidget.of(context)!.state;
+    final textRes = AppLocalizations.of(context)!;
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(textRes.settings),
+        centerTitle: true,
+        flexibleSpace:
+            state.useDarkMode ? null : AppBarBackground(state: state),
+      ),
+      body: SettingsList(
+        sections: [
+          SettingsSection(
+            title: Text(textRes.appearance),
+            tiles: [
+              SettingsTile.switchTile(
+                initialValue: state.useDarkMode,
+                onToggle: (value) => state.changeTheme(value),
+                activeSwitchColor: Theme.of(context).colorScheme.primary,
+                leading: const Icon(Icons.wrap_text),
+                title: Text(textRes.darkMode),
+                description: Text(textRes.darkModeSummary),
+              ),
+            ],
+          ),
+          SettingsSection(
+            title: Text(textRes.behavior),
+            tiles: [
+              SettingsTile.switchTile(
+                initialValue: state.softWrap,
+                onToggle: (value) => state.setSoftWrap(value),
+                activeSwitchColor: Theme.of(context).colorScheme.primary,
+                leading: const Icon(Icons.wrap_text),
+                title: Text(textRes.softWrap),
+                description: Text(textRes.softWrapSummary),
+              )
+            ],
+          ),
+          SettingsSection(
+            title: Text(textRes.about),
+            tiles: [
+              SettingsTile(
+                leading: const Icon(Icons.info),
+                title: Text(TypeCast.appName),
+                description: Text(textRes.aboutSummary),
+                onPressed: (context) {
+                  launchUrl(
+                    Uri.parse(
+                      'https://github.com/Keddnyo/TypeCast',
+                    ),
+                    mode: LaunchMode.externalApplication,
+                  );
+                },
+              ),
+              SettingsTile(
+                leading: const Icon(Icons.account_circle),
+                title: const Text('Keddnyo'),
+                description: Text(textRes.developer),
+                onPressed: (context) {
+                  launchUrl(
+                    Uri.parse(
+                      'https://4pda.to/forum/index.php?showuser=8096247',
+                    ),
+                    mode: LaunchMode.externalApplication,
+                  );
+                },
+              ),
+            ],
+          ),
+        ],
+        platform: DevicePlatform.iOS,
+        lightTheme: SettingsThemeData(
+          titleTextColor: Theme.of(context).colorScheme.primary,
+          // settingsListBackground: Theme.of(context).colorScheme.background,
+          leadingIconsColor: Theme.of(context).colorScheme.primary,
+        ),
+        darkTheme: SettingsThemeData(
+          titleTextColor: Theme.of(context).colorScheme.primary,
+          settingsListBackground: Theme.of(context).colorScheme.background,
+          leadingIconsColor: Theme.of(context).colorScheme.primary,
+        ),
       ),
     );
   }
