@@ -6,8 +6,14 @@
 
 ## Скриншоты
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/65981689/235524375-8bacc484-b8e8-43ca-ab06-b2d3dcb06911.png" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/235524381-a31523c5-484c-4b7e-969c-47a04caa53e7.png" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235735826-6a953a49-c2f9-42e4-9263-8e1f56885d33.png" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235735829-31008691-2032-43c9-bfd6-d5385c4eafcd.png" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235735833-48d9b3bd-9967-4f28-91c8-74d8f367f187.png" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235735895-dafdcf96-f192-4e9c-bd2c-e1800013a7e9.png" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235735910-0dcb9de1-1401-4d20-9310-3315e7c8e335.png" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235735940-0fa69083-79f9-49c0-9ccb-924d3c52200d.png" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235735956-ac197646-5f53-4297-b050-370021e409db.png" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235735974-73cb4c64-e87b-4826-8340-7cbb1b622252.png" max-width="100%" width="33%">
 </p>
 
 ## Возможности:
@@ -36,6 +42,8 @@
 * Тёмная тема - AMOLED.
 
 * Цветовая схема программы меняется в зависимости от выбранного раздела.
+
+* По умолчанию поддерживается перенос текста дайджеста, однако его можно выключить в настройках.
 
 * Приложение доступно для разных платформ:
   1. Android 4.1 и выше
