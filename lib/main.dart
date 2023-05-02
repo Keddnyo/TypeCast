@@ -82,7 +82,6 @@ class TypeCastState extends State<TypeCast> {
   final forumParams = {
     ForumType.androidApps: ForumParams(
       id: TypeCast.androidAppsId,
-      name: 'Android - Программы',
       digestTopicId: '127361',
       color: Colors.indigo,
       darkColor: Colors.lightBlue,
@@ -90,7 +89,6 @@ class TypeCastState extends State<TypeCast> {
     ),
     ForumType.androidGames: ForumParams(
       id: TypeCast.androidGamesId,
-      name: 'Android - Игры',
       digestTopicId: '381335',
       color: Colors.red,
       darkColor: Colors.amber,
@@ -98,7 +96,6 @@ class TypeCastState extends State<TypeCast> {
     ),
     ForumType.wearableApps: ForumParams(
       id: TypeCast.wearableAppsId,
-      name: 'Носимые устройства',
       digestTopicId: '979689',
       color: Colors.purple,
       darkColor: Colors.pink,
@@ -472,6 +469,7 @@ class NavigationDrawer extends StatelessWidget {
             leading: const Icon(Icons.settings),
             title: Text(AppLocalizations.of(context)!.settings),
             onTap: () {
+              Navigator.pop(context);
               Navigator.pushNamed(context, '/settings');
             },
           ),
@@ -585,7 +583,6 @@ enum ForumType {
 
 class ForumParams {
   int id;
-  String name;
   String digestTopicId;
   MaterialColor color;
   MaterialColor darkColor;
@@ -593,7 +590,6 @@ class ForumParams {
 
   ForumParams({
     required this.id,
-    required this.name,
     required this.digestTopicId,
     required this.color,
     required this.darkColor,
