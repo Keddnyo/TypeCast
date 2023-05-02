@@ -16,7 +16,7 @@
     "softWrap": "Перенос строк",
     "softWrapSummary": "Удобно для маленьких экранов",
     "openLastPost": "Переход в конец темы",
-    "openLastPostSummary": "Открывать последний пост при отправке",
+    "openLastPostSummary": "Открывать последний пост в теме дайджеста",
 
     "about": "О приложении",
     "aboutSummary": "Репозиторий на GitHub",
