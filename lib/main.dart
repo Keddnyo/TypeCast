@@ -527,7 +527,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   void initState() {
     super.initState();
-    _packageInfo.then((info) => appVersion = info.version);
+    _packageInfo.then((info) => setState(() => appVersion = info.version));
   }
 
   @override
