@@ -1,4 +1,5 @@
 {
+    "openForumHint": "Откройте меню и выберите раздел",
     "send": "Отправить",
 
     "androidApps": "Android - Программы",
@@ -14,6 +15,8 @@
     "behavior": "Поведение",
     "softWrap": "Перенос строк",
     "softWrapSummary": "Удобно для маленьких экранов",
+    "openLastPost": "Переход в конец темы",
+    "openLastPostSummary": "Открывать последний пост при отправке",
 
     "about": "О приложении",
     "aboutSummary": "Репозиторий на GitHub",

@@ -1,4 +1,5 @@
 {
+    "openForumHint": "Open menu drawer and choose item",
     "send": "Send",
 
     "androidApps": "Android - Apps",
@@ -12,8 +13,10 @@
     "darkModeSummary": "Good for AMOLED screens",
 
     "behavior": "Behavior",
-    "softWrap": "Text soft wrap",
+    "softWrap": "Text wrapping",
     "softWrapSummary": "Good for small-size screens",
+    "openLastPost": "Open the last post",
+    "openLastPostSummary": "Open the last post in the digest topic",
 
     "about": "About",
     "aboutSummary": "Source code on GitHub",

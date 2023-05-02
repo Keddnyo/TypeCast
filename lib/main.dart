@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_linkify/flutter_linkify.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:settings_ui/settings_ui.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -16,9 +17,9 @@ class TypeCast extends StatefulWidget {
   const TypeCast({super.key});
 
   static String appName = 'TypeCast';
-  static String fontFamily = 'Comic Sans MS';
 
   static bool softWrap = true;
+  static bool openLastPost = true;
 
   static int androidAppsId = 212;
   static int androidGamesId = 213;
@@ -31,20 +32,30 @@ class TypeCast extends StatefulWidget {
 class TypeCastState extends State<TypeCast> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-  bool useDarkMode = false;
+  bool isDarkMode = false;
+  bool isSoftWrap = TypeCast.softWrap;
+  bool isOpenLastPost = false;
 
-  void changeTheme(bool darkMode) async {
-    setState(() {
-      useDarkMode = darkMode;
-    });
-
-    final SharedPreferences prefs = await _prefs;
-    await prefs.setBool('theme', useDarkMode == true);
+  changeTheme(bool darkMode) async {
+    setState(() => isDarkMode = darkMode);
+    await _prefs.then(
+      (prefs) => prefs.setBool('theme', isDarkMode),
+    );
   }
 
-  bool softWrap = TypeCast.softWrap;
+  setSoftWrap(bool newValue) async {
+    setState(() => isSoftWrap = newValue);
+    await _prefs.then(
+      (prefs) => prefs.setBool('use-soft-wrap', isOpenLastPost),
+    );
+  }
 
-  setSoftWrap(bool newValue) => setState(() => softWrap = newValue);
+  setOpenLastPost(bool condition) async {
+    setState(() => isOpenLastPost = condition);
+    await _prefs.then(
+      (prefs) => prefs.setBool('open-last-post', isOpenLastPost),
+    );
+  }
 
   var dateRange = DateTimeRange(
     start: DateTime.now().subtract(
@@ -109,15 +120,18 @@ class TypeCastState extends State<TypeCast> {
     _prefs.then((SharedPreferences prefs) {
       var darkMode = prefs.getBool('theme') ?? false;
 
-      var forumId = prefs.getInt('forum') ?? TypeCast.androidAppsId;
+      var forumId = prefs.getInt('forum');
       final ForumType type = forumTypes[forumId]!;
 
-      var useSoftWrap = prefs.getBool('useSoftWrap') ?? TypeCast.softWrap;
+      var useSoftWrap = prefs.getBool('use-soft-wrap') ?? TypeCast.softWrap;
+      var openLastPost =
+          prefs.getBool('open-last-post') ?? TypeCast.openLastPost;
 
       setState(() {
-        useDarkMode = darkMode;
+        isDarkMode = darkMode;
         currentForum = type;
-        softWrap = useSoftWrap;
+        isSoftWrap = useSoftWrap;
+        isOpenLastPost = openLastPost;
       });
     });
   }
@@ -133,15 +147,13 @@ class TypeCastState extends State<TypeCast> {
         theme: FlexThemeData.light(
           primary: forumParams[currentForum]?.color,
           secondary: forumParams[currentForum]?.color,
-          fontFamily: TypeCast.fontFamily,
         ),
         darkTheme: FlexThemeData.dark(
           primary: forumParams[currentForum]?.darkColor,
           secondary: forumParams[currentForum]?.darkColor,
-          fontFamily: TypeCast.fontFamily,
           darkIsTrueBlack: true,
         ),
-        themeMode: useDarkMode ? ThemeMode.dark : ThemeMode.light,
+        themeMode: isDarkMode ? ThemeMode.dark : ThemeMode.light,
         localizationsDelegates: AppLocalizations.localizationsDelegates,
         supportedLocales: AppLocalizations.supportedLocales,
         initialRoute: '/',
@@ -202,8 +214,7 @@ class _MainScreen extends StatelessWidget {
             ],
           ),
         ),
-        flexibleSpace:
-            state.useDarkMode ? null : AppBarBackground(state: state),
+        flexibleSpace: state.isDarkMode ? null : AppBarBackground(state: state),
         centerTitle: true,
         actions: [
           IconButton(
@@ -223,7 +234,23 @@ class _MainScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: _DigestContent(),
+      body: state.currentForum != null
+          ? _DigestContent()
+          : Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.menu),
+                    Text(
+                      textRes.openForumHint,
+                      style: const TextStyle(fontSize: 20),
+                    ),
+                  ],
+                ),
+              ),
+            ),
       drawer: NavigationDrawer(state: state),
     );
   }
@@ -308,7 +335,7 @@ class _DigestContentState extends State<_DigestContent> {
 
             showLinkifyText(bool softWrap) {
               return Linkify(
-                softWrap: state.softWrap,
+                softWrap: state.isSoftWrap,
                 text: digest,
                 onOpen: (link) {
                   launchUrl(
@@ -323,8 +350,9 @@ class _DigestContentState extends State<_DigestContent> {
                 style: const TextStyle(
                   fontSize: 16,
                 ),
-                linkStyle:
-                    TextStyle(color: Theme.of(context).colorScheme.primary),
+                linkStyle: !state.isDarkMode
+                    ? TextStyle(color: Theme.of(context).colorScheme.primary)
+                    : null,
               );
             }
 
@@ -334,10 +362,10 @@ class _DigestContentState extends State<_DigestContent> {
                 children: [
                   SingleChildScrollView(
                     scrollDirection:
-                        state.softWrap ? Axis.vertical : Axis.horizontal,
+                        state.isSoftWrap ? Axis.vertical : Axis.horizontal,
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: showLinkifyText(state.softWrap),
+                      child: showLinkifyText(state.isSoftWrap),
                     ),
                   ),
                   const SizedBox(height: 100),
@@ -348,10 +376,15 @@ class _DigestContentState extends State<_DigestContent> {
                 label: Text(AppLocalizations.of(context)!.send),
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: digest));
+
+                  var digestTopicLink =
+                      'https://4pda.to/forum/index.php?showtopic=${state.forumParams[state.currentForum]?.digestTopicId}';
+                  if (state.isOpenLastPost) {
+                    digestTopicLink = '$digestTopicLink&view=getlastpost';
+                  }
+
                   launchUrl(
-                    Uri.parse(
-                      'https://4pda.to/forum/index.php?showtopic=${state.forumParams[state.currentForum]?.digestTopicId}',
-                    ),
+                    Uri.parse(digestTopicLink),
                     mode: LaunchMode.externalApplication,
                   );
                 },
@@ -390,7 +423,7 @@ class NavigationDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      backgroundColor: state.useDarkMode ? Colors.black : null,
+      backgroundColor: state.isDarkMode ? Colors.black : null,
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
@@ -487,6 +520,15 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  final Future<PackageInfo> _packageInfo = PackageInfo.fromPlatform();
+  String? appVersion;
+
+  @override
+  void initState() {
+    super.initState();
+    _packageInfo.then((info) => appVersion = info.version);
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = TypeCastInheritedWidget.of(context)!.state;
@@ -496,8 +538,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         title: Text(textRes.settings),
         centerTitle: true,
-        flexibleSpace:
-            state.useDarkMode ? null : AppBarBackground(state: state),
+        flexibleSpace: AppBarBackground(state: state),
       ),
       body: SettingsList(
         sections: [
@@ -505,7 +546,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: Text(textRes.appearance),
             tiles: [
               SettingsTile.switchTile(
-                initialValue: state.useDarkMode,
+                initialValue: state.isDarkMode,
                 onToggle: (value) => state.changeTheme(value),
                 activeSwitchColor: Theme.of(context).colorScheme.primary,
                 leading: const Icon(Icons.wrap_text),
@@ -518,13 +559,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: Text(textRes.behavior),
             tiles: [
               SettingsTile.switchTile(
-                initialValue: state.softWrap,
+                initialValue: state.isSoftWrap,
                 onToggle: (value) => state.setSoftWrap(value),
                 activeSwitchColor: Theme.of(context).colorScheme.primary,
                 leading: const Icon(Icons.wrap_text),
                 title: Text(textRes.softWrap),
                 description: Text(textRes.softWrapSummary),
-              )
+              ),
+              SettingsTile.switchTile(
+                initialValue: state.isOpenLastPost,
+                onToggle: (value) => state.setOpenLastPost(value),
+                activeSwitchColor: Theme.of(context).colorScheme.primary,
+                leading: const Icon(Icons.fast_forward),
+                title: Text(textRes.openLastPost),
+                description: Text(textRes.openLastPostSummary),
+              ),
             ],
           ),
           SettingsSection(
@@ -532,7 +581,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             tiles: [
               SettingsTile(
                 leading: const Icon(Icons.info),
-                title: Text(TypeCast.appName),
+                title: Text('${TypeCast.appName} ${appVersion ?? ''}'),
                 description: Text(textRes.aboutSummary),
                 onPressed: (context) {
                   launchUrl(
@@ -565,7 +614,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
           leadingIconsColor: Theme.of(context).colorScheme.primary,
         ),
         darkTheme: SettingsThemeData(
-          titleTextColor: Theme.of(context).colorScheme.primary,
           settingsListBackground: Theme.of(context).colorScheme.background,
           leadingIconsColor: Theme.of(context).colorScheme.primary,
         ),
