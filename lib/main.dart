@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -162,6 +164,7 @@ class TypeCastState extends State<TypeCast> {
           '/': (context) => _MainScreen(),
           '/settings': (context) => const SettingsScreen(),
         },
+        scrollBehavior: AppScrollBehavior(),
       ),
     );
   }
@@ -662,4 +665,14 @@ class TypeCastInheritedWidget extends InheritedWidget {
     return context
         .dependOnInheritedWidgetOfExactType<TypeCastInheritedWidget>();
   }
+}
+
+class AppScrollBehavior extends MaterialScrollBehavior {
+  @override
+  Set<PointerDeviceKind> get dragDevices => {
+        PointerDeviceKind.touch,
+        PointerDeviceKind.mouse,
+        PointerDeviceKind.trackpad,
+        PointerDeviceKind.stylus,
+      };
 }
