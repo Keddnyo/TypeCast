@@ -562,7 +562,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         platform: DevicePlatform.iOS,
         lightTheme: SettingsThemeData(
           titleTextColor: Theme.of(context).colorScheme.primary,
-          // settingsListBackground: Theme.of(context).colorScheme.background,
           leadingIconsColor: Theme.of(context).colorScheme.primary,
         ),
         darkTheme: SettingsThemeData(
