@@ -6,14 +6,14 @@
 
 ## Screenshots
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/65981689/235740380-bc8edd9b-b69c-43e1-b43f-e8f1174e3b0e.png" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/235740388-c9e44f38-20cd-4ba4-84aa-8ead46a687b3.png" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/235740391-9aeaa120-e0fe-4342-a79b-21fc5f17212c.png" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/235740397-689286ca-1a74-437b-a935-3f504d577bff.png" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/235740399-ae26c781-bf8b-4888-a898-85f3c05e35cd.png" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/235740404-007741a4-24b6-41f1-a358-86fc7f6306bd.png" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/235740392-c8318021-8035-4eb3-9e19-20f23fc0f74c.png" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/235740395-3abcc218-3548-485a-9c58-2e4299cd61fd.png" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235790743-a2e92666-3dbb-4547-9a09-fa04fa218d2f.jpg" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235790752-899fa559-edc2-494b-9f58-0613a6b92d12.jpg" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235790753-99600837-ac4b-4ca5-87b8-55db8666f790.jpg" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235790755-06724df1-ced7-4efa-8c3c-2b864eccad2c.jpg" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235790757-716629d2-8750-4e75-8580-cfbc42c961dc.jpg" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235790759-ec506bdb-5763-4f65-93a4-afc960dbb6ed.jpg" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235790762-a93e7245-3a77-413b-aa48-4d4b41cc2604.jpg" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235790763-0a75f3c5-e9ff-4990-af96-f4e50fb39f09.jpg" max-width="100%" width="33%">
 </p>
 
 ## Features:
