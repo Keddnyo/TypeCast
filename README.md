@@ -32,6 +32,8 @@
 * Clicking on the header moves the digest to the beginning.
 
 * Digest text formatting is adaptive for each forum section.
+* Text soft wrap is supported by default but you can turn it off.
+* If you're using a Windows version you can drag the digest text by pressing a mouse button.
 
 * The links in the digest text are clickable. You can go directly to the desired topic.
 
@@ -41,8 +43,6 @@
 * The dark theme is AMOLED.
 
 * The color scheme of the program changes depending on the selected section.
-
-* Text soft wrap is supported by default but you can turn it off.
 
 * The app is available for different platforms:
   1. Android 4.1 and above
