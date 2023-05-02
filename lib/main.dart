@@ -18,8 +18,9 @@ class TypeCast extends StatefulWidget {
 
   static String appName = 'TypeCast';
 
+  static bool darkMode = false;
   static bool softWrap = true;
-  static bool openLastPost = true;
+  static bool openLastPost = false;
 
   static int androidAppsId = 212;
   static int androidGamesId = 213;
@@ -32,9 +33,9 @@ class TypeCast extends StatefulWidget {
 class TypeCastState extends State<TypeCast> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
-  bool isDarkMode = false;
+  bool isDarkMode = TypeCast.darkMode;
   bool isSoftWrap = TypeCast.softWrap;
-  bool isOpenLastPost = false;
+  bool isOpenLastPost = TypeCast.openLastPost;
 
   changeTheme(bool darkMode) async {
     setState(() => isDarkMode = darkMode);
