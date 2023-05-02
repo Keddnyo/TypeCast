@@ -191,30 +191,32 @@ class _MainScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: GestureDetector(
-          onTap: () {
-            state.controller.animateTo(
-              0,
-              duration: const Duration(milliseconds: 500),
-              curve: Curves.decelerate,
-            );
-          },
-          child: Column(
-            children: [
-              Text(
-                forumTitle,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+        title: state.currentForum != null
+            ? GestureDetector(
+                onTap: () {
+                  state.controller.animateTo(
+                    0,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.decelerate,
+                  );
+                },
+                child: Column(
+                  children: [
+                    Text(
+                      forumTitle,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      '${state.getDateStart()} - ${state.getDateEnd()}',
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                  ],
                 ),
-              ),
-              Text(
-                '${state.getDateStart()} - ${state.getDateEnd()}',
-                style: const TextStyle(fontSize: 12),
-              ),
-            ],
-          ),
-        ),
+              )
+            : Text(TypeCast.appName),
         flexibleSpace: AppBarBackground(state: state),
         centerTitle: true,
         actions: [
