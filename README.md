@@ -6,8 +6,14 @@
 
 ## Screenshots
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/65981689/235524375-8bacc484-b8e8-43ca-ab06-b2d3dcb06911.png" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/235524381-a31523c5-484c-4b7e-969c-47a04caa53e7.png" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235735045-8dc0a603-d67d-4658-be70-2a1b23aea752.png" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235735049-d61e8bd6-9f19-42a3-a69b-b5916fecf279.png" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235735053-c303d8b9-5081-406a-9b10-5b58967bbdb9.png" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235735058-526ef124-9c15-45fb-8138-af41c0a7ece4.png" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235735079-35838d00-c5d0-440a-b292-da9ef73ce2eb.png" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235735097-48167a5c-9211-4bbe-ba8b-8c02f29e59b4.png" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235735141-dd3db343-e6e9-49f2-a496-63341f192719.png" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235735144-ef37b4b2-706a-43dd-b4af-2ff5470b2bb8.png" max-width="100%" width="33%">
 </p>
 
 ## Features:
@@ -35,6 +41,8 @@
 * The dark theme is AMOLED.
 
 * The color scheme of the program changes depending on the selected section.
+
+* Text soft wrap is supported by default but you can turn it off.
 
 * The app is available for different platforms:
   1. Android 4.1 and above
