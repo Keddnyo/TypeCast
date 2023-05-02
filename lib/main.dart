@@ -215,7 +215,7 @@ class _MainScreen extends StatelessWidget {
             ],
           ),
         ),
-        flexibleSpace: state.isDarkMode ? null : AppBarBackground(state: state),
+        flexibleSpace: AppBarBackground(state: state),
         centerTitle: true,
         actions: [
           IconButton(
