@@ -345,7 +345,7 @@ class _DigestContentState extends State<_DigestContent> {
               ),
               floatingActionButton: FloatingActionButton.extended(
                 icon: const Icon(Icons.send),
-                label: const Text('Отправить'),
+                label: Text(AppLocalizations.of(context)!.send),
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: digest));
                   launchUrl(
