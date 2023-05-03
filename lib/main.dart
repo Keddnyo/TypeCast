@@ -384,8 +384,9 @@ class _DigestContentState extends State<_DigestContent> {
               body: condition3
                   ? Center(
                       child: Text(
-                      AppLocalizations.of(context)!.digestIsEmpty,
+                      '${AppLocalizations.of(context)!.digestIsEmpty}\n${state.getDateStart()} - ${state.getDateEnd()}',
                       style: const TextStyle(fontSize: 20),
+                      textAlign: TextAlign.center,
                     ))
                   : ListView(
                       controller: state.controller,
