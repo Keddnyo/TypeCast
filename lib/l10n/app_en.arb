@@ -1,6 +1,6 @@
 {
     "openForumHint": "Open menu drawer and choose item",
-    "send": "Send",
+    "digestIsEmpty": "Digest is empty",
 
     "androidApps": "Android - Apps",
     "androidGames": "Android - Games",
@@ -13,8 +13,6 @@
     "darkModeSummary": "Good for AMOLED screens",
 
     "behavior": "Behavior",
-    "softWrap": "Text wrapping",
-    "softWrapSummary": "Good for small-size screens",
     "openLastPost": "Open the last post",
     "openLastPostSummary": "Open the last post in the digest topic",
 

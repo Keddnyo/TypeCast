@@ -21,7 +21,6 @@ class TypeCast extends StatefulWidget {
   static String appName = 'TypeCast';
 
   static bool darkMode = false;
-  static bool softWrap = true;
   static bool openLastPost = false;
 
   static int androidAppsId = 212;
@@ -36,20 +35,12 @@ class TypeCastState extends State<TypeCast> {
   final Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
 
   bool isDarkMode = TypeCast.darkMode;
-  bool isSoftWrap = TypeCast.softWrap;
   bool isOpenLastPost = TypeCast.openLastPost;
 
   changeTheme(bool darkMode) async {
     setState(() => isDarkMode = darkMode);
     await _prefs.then(
       (prefs) => prefs.setBool('theme', isDarkMode),
-    );
-  }
-
-  setSoftWrap(bool newValue) async {
-    setState(() => isSoftWrap = newValue);
-    await _prefs.then(
-      (prefs) => prefs.setBool('use-soft-wrap', isOpenLastPost),
     );
   }
 
@@ -126,14 +117,12 @@ class TypeCastState extends State<TypeCast> {
       var forumId = prefs.getInt('forum');
       final ForumType type = forumTypes[forumId]!;
 
-      var useSoftWrap = prefs.getBool('use-soft-wrap') ?? TypeCast.softWrap;
       var openLastPost =
           prefs.getBool('open-last-post') ?? TypeCast.openLastPost;
 
       setState(() {
         isDarkMode = darkMode;
         currentForum = type;
-        isSoftWrap = useSoftWrap;
         isOpenLastPost = openLastPost;
       });
     });
@@ -220,7 +209,7 @@ class _MainScreen extends StatelessWidget {
                 ),
               )
             : Text(TypeCast.appName),
-        flexibleSpace: AppBarBackground(state: state),
+        flexibleSpace: state.isDarkMode ? null : AppBarBackground(state: state),
         centerTitle: true,
         actions: [
           IconButton(
@@ -235,7 +224,7 @@ class _MainScreen extends StatelessWidget {
               ).then(
                 (range) => state.setDateRange(range ?? state.dateRange),
               );
-              state.controller.jumpTo(0);
+              if (state.controller.hasClients) state.controller.jumpTo(0);
             },
           ),
         ],
@@ -292,6 +281,11 @@ class _DigestContent extends StatefulWidget {
 }
 
 class _DigestContentState extends State<_DigestContent> {
+  bool isFreeNavigation = false;
+  changeFreeNavigation() {
+    setState(() => isFreeNavigation = !isFreeNavigation);
+  }
+
   @override
   Widget build(BuildContext context) {
     final state = TypeCastInheritedWidget.of(context)!.state;
@@ -325,6 +319,27 @@ class _DigestContentState extends State<_DigestContent> {
           if (snapshot.data?.statusCode == 200) {
             String digest = content;
 
+            var condition1 = digest.contains('программ[/b]: 0');
+            var condition2 = digest.contains('Обновлений[/b]: 0');
+
+            if (condition1) {
+              digest = digest
+                  .replaceAll('\n[*][b]Новых программ[/b]: 0', '')
+                  .replaceAll(
+                      '\n\n[CENTER][b][color="royalblue"]Новые программы, ранее не публиковавшиеся на форуме:[/color][/b][/CENTER]',
+                      '');
+            }
+            if (condition2) {
+              digest = digest
+                  .replaceAll('\n[*][b]Обновлений[/b]: 0', '')
+                  .replaceAll(
+                      '\n\n[CENTER][b][color="royalblue"]Обновление ранее опубликованных на форуме программ:[/color][/b][/CENTER]',
+                      '');
+            }
+            if (condition1 && condition2) {
+              digest = '$digest\n\n[Digest is empty]';
+            }
+
             switch (state.currentForum) {
               case ForumType.androidGames:
                 digest =
@@ -333,6 +348,7 @@ class _DigestContentState extends State<_DigestContent> {
                             '[/spoiler]\n[spoiler', '[/spoiler][spoiler');
                 break;
               case ForumType.wearableApps:
+                digest = digest.replaceAll('[list=1]\n[/list]\n', '');
                 break;
               default:
                 digest =
@@ -341,7 +357,7 @@ class _DigestContentState extends State<_DigestContent> {
 
             showLinkifyText(bool softWrap) {
               return Linkify(
-                softWrap: state.isSoftWrap,
+                softWrap: !isFreeNavigation,
                 text: digest,
                 onOpen: (link) {
                   launchUrl(
@@ -362,39 +378,67 @@ class _DigestContentState extends State<_DigestContent> {
               );
             }
 
+            var condition3 = digest.contains('[Digest is empty]');
+
             return Scaffold(
-              body: ListView(
-                controller: state.controller,
-                children: [
-                  SingleChildScrollView(
-                    scrollDirection:
-                        state.isSoftWrap ? Axis.vertical : Axis.horizontal,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: showLinkifyText(state.isSoftWrap),
+              body: condition3
+                  ? Center(
+                      child: Text(
+                      AppLocalizations.of(context)!.digestIsEmpty,
+                      style: const TextStyle(fontSize: 20),
+                    ))
+                  : ListView(
+                      controller: state.controller,
+                      children: [
+                        SingleChildScrollView(
+                          scrollDirection: isFreeNavigation
+                              ? Axis.horizontal
+                              : Axis.vertical,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: showLinkifyText(isFreeNavigation),
+                          ),
+                        ),
+                        const SizedBox(height: 100),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 100),
-                ],
-              ),
-              floatingActionButton: FloatingActionButton.extended(
-                icon: const Icon(Icons.send),
-                label: Text(AppLocalizations.of(context)!.send),
-                onPressed: () {
-                  Clipboard.setData(ClipboardData(text: digest));
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerFloat,
+              floatingActionButton: condition3
+                  ? null
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        FloatingActionButton(
+                          onPressed: () {
+                            changeFreeNavigation();
+                          },
+                          heroTag: null,
+                          child: Icon(isFreeNavigation
+                              ? Icons.wrap_text
+                              : Icons.open_with),
+                        ),
+                        FloatingActionButton(
+                          onPressed: () {
+                            Clipboard.setData(ClipboardData(text: digest));
 
-                  var digestTopicLink =
-                      'https://4pda.to/forum/index.php?showtopic=${state.forumParams[state.currentForum]?.digestTopicId}';
-                  if (state.isOpenLastPost) {
-                    digestTopicLink = '$digestTopicLink&view=getlastpost';
-                  }
+                            var digestTopicLink =
+                                'https://4pda.to/forum/index.php?showtopic=${state.forumParams[state.currentForum]?.digestTopicId}';
+                            if (state.isOpenLastPost) {
+                              digestTopicLink =
+                                  '$digestTopicLink&view=getlastpost';
+                            }
 
-                  launchUrl(
-                    Uri.parse(digestTopicLink),
-                    mode: LaunchMode.externalApplication,
-                  );
-                },
-              ),
+                            launchUrl(
+                              Uri.parse(digestTopicLink),
+                              mode: LaunchMode.externalApplication,
+                            );
+                          },
+                          heroTag: null,
+                          child: const Icon(Icons.send),
+                        ),
+                      ],
+                    ),
             );
           } else {
             return Scaffold(
@@ -509,7 +553,9 @@ class NavigationDrawer extends StatelessWidget {
             title: Text(AppLocalizations.of(context)!.settings),
             onTap: () {
               Navigator.pop(context);
-              Navigator.pushNamed(context, '/settings');
+              Navigator.push(context, MaterialPageRoute(builder: (_) {
+                return const SettingsScreen();
+              }));
             },
           ),
         ],
@@ -544,7 +590,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       appBar: AppBar(
         title: Text(textRes.settings),
         centerTitle: true,
-        flexibleSpace: AppBarBackground(state: state),
+        flexibleSpace: state.isDarkMode ? null : AppBarBackground(state: state),
       ),
       body: SettingsList(
         sections: [
@@ -565,14 +611,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             title: Text(textRes.behavior),
             tiles: [
               SettingsTile.switchTile(
-                initialValue: state.isSoftWrap,
-                onToggle: (value) => state.setSoftWrap(value),
-                activeSwitchColor: Theme.of(context).colorScheme.primary,
-                leading: const Icon(Icons.wrap_text),
-                title: Text(textRes.softWrap),
-                description: Text(textRes.softWrapSummary),
-              ),
-              SettingsTile.switchTile(
                 initialValue: state.isOpenLastPost,
                 onToggle: (value) => state.setOpenLastPost(value),
                 activeSwitchColor: Theme.of(context).colorScheme.primary,
@@ -588,6 +626,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               SettingsTile(
                 leading: const Icon(Icons.info),
                 title: Text('${TypeCast.appName} ${appVersion ?? ''}'),
+                // title: Text('${TypeCast.appName}'),
                 description: Text(textRes.aboutSummary),
                 onPressed: (context) {
                   launchUrl(

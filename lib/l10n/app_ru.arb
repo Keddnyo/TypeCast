@@ -1,6 +1,6 @@
 {
     "openForumHint": "Откройте меню и выберите раздел",
-    "send": "Отправить",
+    "digestIsEmpty": "Обновления отсутствуют",
 
     "androidApps": "Android - Программы",
     "androidGames": "Android - Игры",
@@ -13,8 +13,6 @@
     "darkModeSummary": "Актуально для AMOLED экранов",
 
     "behavior": "Поведение",
-    "softWrap": "Перенос строк",
-    "softWrapSummary": "Удобно для маленьких экранов",
     "openLastPost": "Переход в конец темы",
     "openLastPostSummary": "Открывать последний пост в теме дайджеста",
 
