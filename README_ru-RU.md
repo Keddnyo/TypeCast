@@ -6,14 +6,14 @@
 
 ## Скриншоты
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/65981689/235791001-803bc05f-81db-4d64-a537-4feeb1508f20.jpg" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/235791005-ffd1f12a-363d-4736-bbc1-ad80f5d3418a.jpg" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/235791010-c2d0880e-46ba-49ad-9e20-5c97a2d10f13.jpg" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/235791011-52b17459-6e90-4486-9e97-6f62a1b4874a.jpg" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/235791016-d419b331-2287-4127-ac89-1757150dac56.jpg" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/235791018-c991bb08-efd3-456a-a668-26f3888066f8.jpg" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/235791020-28144f89-47b1-4e62-9321-273ea909007d.jpg" max-width="100%" width="33%">
-  <img src="https://user-images.githubusercontent.com/65981689/235791023-6197ca9a-db0b-45da-a859-3be1e6772969.jpg" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235870496-116f3b14-65e1-4753-8c44-798815b10d53.jpg" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235870500-437e2578-2083-43cf-9582-895af2a867a3.jpg" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235870504-44b17164-2b3f-4ea5-8980-bcb5a495e4c8.jpg" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235870513-e4783aa3-138e-41bc-8568-ff11c0586f96.jpg" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235870526-f57a62c2-80d0-4d78-8386-acc21d6e67b6.jpg" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235870528-13ede231-9145-451f-92cd-7d2d949db410.jpg" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235870533-128e05db-5346-459b-a724-8e3eb454f31c.jpg" max-width="100%" width="33%">
+  <img src="https://user-images.githubusercontent.com/65981689/235870535-ecbed33e-786c-4198-a2b5-927c253f142c.jpg" max-width="100%" width="33%">
 </p>
 
 ## Возможности:
