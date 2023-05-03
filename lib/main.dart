@@ -391,13 +391,17 @@ class _DigestContentState extends State<_DigestContent> {
                   : ListView(
                       controller: state.controller,
                       children: [
-                        SingleChildScrollView(
-                          scrollDirection: isFreeNavigation
-                              ? Axis.horizontal
-                              : Axis.vertical,
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: showLinkifyText(isFreeNavigation),
+                        SizedBox(
+                          height: double.maxFinite,
+                          child: SingleChildScrollView(
+                            scrollDirection: isFreeNavigation
+                                ? Axis.horizontal
+                                : Axis.vertical,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                  child: showLinkifyText(isFreeNavigation)),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 100),
