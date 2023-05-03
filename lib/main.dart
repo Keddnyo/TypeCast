@@ -392,7 +392,7 @@ class _DigestContentState extends State<_DigestContent> {
                       controller: state.controller,
                       children: [
                         SizedBox(
-                          height: double.maxFinite,
+                          height: MediaQuery.of(context).size.height,
                           child: SingleChildScrollView(
                             scrollDirection: isFreeNavigation
                                 ? Axis.horizontal
