@@ -352,6 +352,14 @@ class _DigestContentState extends State<_DigestContent> {
                 digest = digest.replaceAll('[list=1]\n[/list]\n', '');
                 break;
               default:
+                {
+                  if (digest.contains('[*][b]Новых') &&
+                      digest.contains('[*][b]Обновлений')) {
+                    digest = digest.replaceAll(
+                        '[CENTER][b][color="royalblue"]Обновление',
+                        '\n\n[CENTER][b][color="royalblue"]Обновление');
+                  }
+                }
             }
 
             showLinkifyText(bool softWrap) {
