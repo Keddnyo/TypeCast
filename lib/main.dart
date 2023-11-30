@@ -345,14 +345,13 @@ class _DigestContentState extends State<_DigestContent> {
                 digest =
                     '${digest.replaceAll('[/list]\n[CENTER][b]', '[/list]\n[/spoiler]\n[CENTER][b]').replaceAll('[CENTER][b]', '[spoiler=').replaceAll('[/b][/CENTER]', ']')}\n[/spoiler]'
                         .replaceAll(
-                            '[/spoiler]\n[spoiler', '[/spoiler][spoiler');
+                            '[/spoiler]\n[spoiler', '[/spoiler][spoiler')
+                        .replaceAll('программ', 'игр');
                 break;
               case ForumType.wearableApps:
                 digest = digest.replaceAll('[list=1]\n[/list]\n', '');
                 break;
               default:
-                digest =
-                    '${digest.replaceAll('[/CENTER]', '[/CENTER]\n[spoiler]').replaceAll('[/list]\n[CENTER]', '[/list]\n[/spoiler]\n[CENTER]')}\n[/spoiler]';
             }
 
             showLinkifyText(bool softWrap) {
